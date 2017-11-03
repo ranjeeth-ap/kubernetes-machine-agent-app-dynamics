@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: kubernetes-machine-appdynamics
+spec:
+  template:
+    metadata:
+      labels:
+        run: kubernetes-machine-appdynamics
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
+      volumes:
+      - name: hostroot
+        hostPath:
+          path: /
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      containers:
+      - name: kubernetes-machine-appdynamics
+        volumeMounts:
+        - mountPath: /hostroot
+          name: hostroot
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+        image: u1m0/kubernetes-machine-appdynamics
+        imagePullPolicy: Always
+        env:
+        - name: APPD_HOST
+          value: "REPLACE_HERE"
+        - name: APPD_PORT
+          value: "REPLACE_HERE"
+        - name: APPD_ACCOUNT_NAME
+          value: "REPLACE_HERE"
+        - name: APPD_ACCESS_KEY
+          value: "REPLACE_HERE"
+        - name: APPD_SSL_ENABLED
+          value: "REPLACE_HERE"
+        securityContext:
+          privileged: true
